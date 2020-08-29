@@ -22,7 +22,7 @@ class PointsController {
     const serializedPoints = points.map(point => {
       return {
         ...point,
-        image_url: `http://192.168.15.11:3333/uploads/${point.image}`,
+        image_url: `http://192.168.15.17:3333/uploads/${point.image}`,
       }
     })
 
@@ -40,7 +40,7 @@ class PointsController {
 
     const serializedPoint = {
         ...point,
-        image_url: `http://192.168.15.11:3333/uploads/${point.image}`,
+        image_url: `http://192.168.15.17:3333/uploads/${point.image}`,
     }
 
     const items = await knex('items')
@@ -53,6 +53,7 @@ class PointsController {
   }
 
   async create (request: Request, response: Response) {
+
     const {
       name,
       email,
@@ -63,11 +64,12 @@ class PointsController {
       uf,
       items
     } = request.body;
-  
+
+    
     const trx = await knex.transaction();
 
     const point = {
-      image: request.file.filename,
+      image:  "-teste-",
       name,
       email,
       whatsapp,
@@ -76,20 +78,19 @@ class PointsController {
       city,
       uf,
     }
-  
+    
+    
     const insertedIds = await trx('points').insert(point);
-  
+
     const point_id = insertedIds[0];
-  
-    const pointItems = items
-    .split(',')
-    .map((item: string) => Number(item.trim()))
-    .map((item_id: number)=> {
+
+    const pointItems = items.map((item_id: number) => {
       return {
         item_id,
         point_id
       }
     })
+    
     await trx('point_items').insert(pointItems);
 
     await trx.commit();

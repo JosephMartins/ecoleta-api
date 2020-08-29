@@ -33,7 +33,7 @@ routes.post(
       longitude: Joi.number().required(),
       city: Joi.string().required(),
       uf: Joi.string().required().max(2),
-      items: Joi.string().required(),
+      items: Joi.allow(),
     })
   }, {
     abortEarly: false
